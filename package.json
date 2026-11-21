@@ -1,0 +1,16 @@
+{
+  "name": "crewroom",
+  "version": "0.0.1",
+  "description": "coming soon",
+  "license": "MIT",
+  "author": "B1Kjuu",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/B1Kjuu/crewroom.git"
+  },
+  "homepage": "https://github.com/B1Kjuu/crewroom#readme",
+  "files": [
+    "README.md",
+    "LICENSE"
+  ]
+}
