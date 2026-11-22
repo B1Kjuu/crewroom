@@ -32,6 +32,10 @@ interface Session {
   timeoutMs: number;
   /** Self-reported (inbox, log, webhook) rather than a Claude Code session. */
   report: boolean;
+  /** Last folder name the session worked in. */
+  project?: string;
+  /** Skill this session is working with (shown as a small drone next to the worker). */
+  skill?: string;
   activity: Activity;
 }
 
@@ -92,6 +96,7 @@ export class CrewState {
       s.worker = chosen;
     }
     s.lastT = now;
+    if (ev.event !== 'Report' && ev.cwd) s.project = projectName(ev.cwd);
     this.now = Math.max(this.now, now);
 
     if (ev.event === 'Report') return this.applyReport(ev, s, match?.action, now);
@@ -114,6 +119,8 @@ export class CrewState {
         break;
       default: {
         s.idleAt = undefined;
+        if (ev.event === 'UserPromptSubmit') s.skill = undefined; // a new task starts without a skill
+        if (ev.tool === 'Skill' && ev.skill) s.skill = ev.skill;
         const action = match?.action;
         const def = action ? this.config.actions[action] : undefined;
         const activity: Activity = {
@@ -242,7 +249,8 @@ export class CrewState {
     }
     if (!driver) return { ...base, state: 'away', sessions: 0 };
     const activity: Activity = idleNow(driver) ? { state: 'idle' } : driver.activity;
-    return { ...base, ...activity, sessions: count };
+    const idle = idleNow(driver);
+    return { ...base, ...activity, sessions: count, ...(driver.project ? { project: driver.project } : {}), ...(driver.skill && !idle ? { skill: driver.skill } : {}) };
   }
 
   private diff(now: number): ServerMsg[] {
@@ -264,4 +272,9 @@ export class CrewState {
     }
     return out;
   }
+}
+
+/** "C:\\Users\\me\\Desktop\\crewroom" -> "crewroom" (trailing slashes ignored). */
+function projectName(cwd: string): string | undefined {
+  return cwd.split(/[\\/]/).filter(Boolean).pop()?.slice(0, 40);
 }

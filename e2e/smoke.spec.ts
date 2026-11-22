@@ -33,7 +33,7 @@ test('the layout editor paints a console, saves it, and goes back to the built-i
   await page.goto('/');
   await expect(page.locator('.status')).toHaveText('Live');
   await page.getByRole('button', { name: 'Edit layout' }).click();
-  await expect(page.locator('#office')).toBeHidden();
+  await expect(page.locator('#stage')).toBeHidden();
   await page.getByRole('radio', { name: 'Console' }).click();
   // built-in deck is 22 x 13 tiles; (14, 5) is floor
   const box = (await page.locator('.editor-canvas').boundingBox())!;
@@ -47,7 +47,7 @@ test('the layout editor paints a console, saves it, and goes back to the built-i
   await expect(page.locator('.editor-status')).toContainText('built-in');
   expect(existsSync(saved)).toBe(false);
   await page.getByRole('button', { name: 'Done' }).click();
-  await expect(page.locator('#office')).toBeVisible();
+  await expect(page.locator('#stage')).toBeVisible();
 });
 
 test('the sprite template is a 64 x 216 PNG the bridge can serve back as a custom crew sheet', async ({ page, request }) => {
@@ -74,6 +74,24 @@ test('importing a layout that is too big says why and keeps the editor working',
   await expect(page.locator('.editor-status')).toContainText('the most is 40');
   await expect(page.locator('.size input').first()).toHaveValue('22');
   await page.getByRole('button', { name: 'Done' }).click();
+});
+
+test('the 3D view is the default, crew walk to their console in it, and 2D is one click away', async ({ page, request }) => {
+  await page.goto('/');
+  await expect(page.locator('.status')).toHaveText('Live');
+  await expect(page.locator('#office3d')).toBeVisible();
+  expect(await page.evaluate(() => window.__crewroom?.view)).toBe('3d');
+  await request.post('/events', { headers: { 'x-crewroom-token': token() }, data: { event: 'PreToolUse', session: 'e2e-3d', tool: 'Skill', skill: 'b1kjuu-editor' } });
+  // console-2 in the built-in deck is the floor tile at (5, 6)
+  await expect
+    .poll(() => page.evaluate(() => window.__crewroom?.crew?.().find((c) => c.id === 'editor')), { timeout: 10_000 })
+    .toMatchObject({ x: 5, y: 6, path: 0 });
+  await page.getByRole('button', { name: '2D view' }).click();
+  await expect(page.locator('#office')).toBeVisible();
+  await expect(page.locator('#office3d')).toBeHidden();
+  expect(await page.evaluate(() => window.__crewroom?.view)).toBe('2d');
+  await page.getByRole('button', { name: '3D view' }).click();
+  await request.post('/events', { headers: { 'x-crewroom-token': token() }, data: { event: 'SessionEnd', session: 'e2e-3d' } });
 });
 
 test('the page rejects a request without the token', async ({ request }) => {

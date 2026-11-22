@@ -4,7 +4,7 @@ A pixel-art spaceship deck that shows your AI workers live. One crewmember per r
 
 Say your Claude Code setup has an editor skill, a writing skill and a dev skill. When a session calls the editor skill, the Editor walks to their console and starts typing. When Claude stops, they head to the lounge. When Claude needs you, they turn around and wave.
 
-Status: phase 3. Set up in a minute, lay out your own deck, draw your own crew. One machine only. Not on npm yet, so run it from a clone.
+Status: phase 4 (3D view). Set up in a minute, lay out your own deck, draw your own crew. One machine only. Not on npm yet, so run it from a clone.
 
 ## Quick start
 
@@ -59,6 +59,10 @@ One file, `~/.crewroom/office.config.json`. A full example lives in [examples/ki
 - A session stays with its worker until another rule matches. So after the editor skill runs, its Bash and Edit calls still animate the Editor.
 - **fallback**: `"per-session"` gives each unmatched session its own crewmember. A worker id sends them all to that worker.
 - **actions**: optional names for a rule's `action`, with a label and an animation (`type`, `read`, `run`, `think` or `wait`).
+
+## 3D view
+
+The deck opens in 3D: a Sims-style view from above, with the crew standing in it as pixel sprites that turn to show their front, back or side as they walk. Drag to turn the view, scroll to zoom, right-drag (or shift-drag) to move, and **Reset view** to go back. The wall nearest you drops low so you can always see in. Console screens glow with the work being done, the airlock opens as crew come and go, and crew working in the same project folder share a coloured ring. **2D view** switches to the flat deck (your choice is remembered); computers without WebGL get the 2D deck automatically.
 
 ## Your own deck
 

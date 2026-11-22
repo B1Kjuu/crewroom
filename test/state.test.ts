@@ -46,6 +46,14 @@ describe('CrewState', () => {
     expect(lastWorker(b, 'editor')).toMatchObject({ state: 'working', anim: 'run', label: 'Bash' });
   });
 
+  it('a worker carries the project folder of the session driving it', () => {
+    const s = new CrewState(config());
+    const m = s.apply(ev({ skill: 'b1kjuu-editor', cwd: 'C:\\Users\\B1kjuu\\Desktop\\crewroom' }), 0);
+    expect(lastWorker(m, 'editor')?.project).toBe('crewroom');
+    const n = s.apply(ev({ tool: 'Bash', cwd: '/home/me/work/omnidesk/' }), 1);
+    expect(lastWorker(n, 'editor')?.project).toBe('omnidesk');
+  });
+
   it('a skill call is labelled with the skill name', () => {
     const s = new CrewState(config());
     const m = s.apply(ev({ tool: 'Skill', skill: 'b1kjuu-editor' }), 0);

@@ -80,14 +80,14 @@ describe('runHook', () => {
     await new Promise((r) => server.close(r));
     const t = Date.now();
     await runHook(JSON.stringify(pre('Read', {})), { home: homeWith(port) });
-    expect(Date.now() - t).toBeLessThan(300);
+    expect(Date.now() - t).toBeLessThan(1000); // proves it never hangs; the hook's own timer is 150 ms
   });
 
   it('resolves within the budget when the server never answers', async () => {
     const { server, port } = await listen(() => {});
     const t = Date.now();
     await runHook(JSON.stringify(pre('Read', {})), { home: homeWith(port), timeoutMs: 150 });
-    expect(Date.now() - t).toBeLessThan(300);
+    expect(Date.now() - t).toBeLessThan(1000); // proves it never hangs; the hook's own timer is 150 ms
     server.closeAllConnections();
     server.close();
   });

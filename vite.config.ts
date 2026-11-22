@@ -6,5 +6,6 @@ export default defineConfig({
   build: {
     outDir: '../../dist/office',
     emptyOutDir: true,
+    chunkSizeWarningLimit: 700, // three.js; it all stays local
   },
 });

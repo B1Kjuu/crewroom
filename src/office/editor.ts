@@ -33,7 +33,7 @@ export interface EditorHooks {
   extras?: HTMLElement[];
 }
 
-export function createEditor(panel: HTMLElement, officeCanvas: HTMLCanvasElement, hooks: EditorHooks) {
+export function createEditor(panel: HTMLElement, officeCanvas: HTMLElement, hooks: EditorHooks) {
   const open = el('button', 'btn', 'Edit layout');
   open.type = 'button';
   const box = el('section', 'editor');

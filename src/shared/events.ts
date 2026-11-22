@@ -52,6 +52,10 @@ export interface WorkerView {
   anim?: Anim;
   sessions: number;
   generic: boolean;
+  /** Folder name of the project the driving session works in (for the shared accent ring in 3D). */
+  project?: string;
+  /** Skill in use right now, if any. */
+  skill?: string;
 }
 
 export interface LogEntry {
