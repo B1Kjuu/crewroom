@@ -1,0 +1,5 @@
+{
+  "office": { "name": "e2e deck", "setting": "crew-deck" },
+  "workers": [{ "id": "editor", "name": "Editor", "sprite": "crew-2", "color": "#3aa7ff", "home": "console-2" }],
+  "rules": [{ "worker": "editor", "when": { "skill": "b1kjuu-editor" } }]
+}
